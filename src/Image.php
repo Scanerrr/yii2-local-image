@@ -27,19 +27,25 @@ class Image
      */
     public static function resize($file, $width = null, $height = null)
     {
-        if (!self::checkFile(Yii::getAlias('@webroot/') . $file)) return '';
+        $file = FileHelper::normalizePath($file);
 
-        self::$width = $width ?? self::$width;
-        self::$height = $height ?? self::$height;
+        $rootFilePath = self::getRootPath($file);
+
+        if (!is_file($rootFilePath)) return '';
 
         $cachedFile = self::formatCachedName($file);
 
         // if cached return file path
-        if (file_exists($cachedFile)) return self::checkFile($cachedFile) ? Yii::getAlias('@web/') . $cachedFile : '';
-        $filePath = $file;
+        if (is_file($cachedFile)) return self::getWebPath($cachedFile);
+
         $file = Yii::$app->urlManager->createAbsoluteUrl($file);
 
         list($origWidth, $origHeight) = getimagesize($file);
+
+        self::$width = $width ?? self::$width;
+        self::$height = $height
+            ? self::$height
+            : ($origHeight * self::$width) / $origWidth;
 
         $imageType = exif_imagetype($file);
 
@@ -60,8 +66,8 @@ class Image
         $scale = min($scaleW, $scaleH);
 
         if ($scale == 1 && $scaleH == $scaleW && $imageType != IMAGETYPE_PNG) {
-            copy(Yii::getAlias('@webroot/') . $filePath, Yii::getAlias('@webroot/') . $cachedFile);
-            return Yii::getAlias('@web/') . $cachedFile;
+            copy($rootFilePath, self::getRootPath($cachedFile));
+            return self::getWebPath($cachedFile);
         }
 
         $newWidth = (int)($origWidth * $scale);
@@ -92,7 +98,7 @@ class Image
                 imagepng($image, $cachedFile);
             }
             imagedestroy($image);
-            return Yii::getAlias('@web/') . $cachedFile;
+            return self::getWebPath($cachedFile);
         }
     }
 
@@ -114,11 +120,13 @@ class Image
         return self::$cachePath . $info['dirname'] . '/' . $info['filename'] . '_' . self::$width . '_' . self::$height . '.' . $info['extension'];
     }
 
-    /**
-     * @param string $file absolute path
-     * @return bool
-     */
-    protected static function checkFile($file) {
-        return is_file($file);
+    protected static function getWebPath($path)
+    {
+        return Yii::getAlias('@webroot/') . $path;
+    }
+
+    protected static function getRootPath($path)
+    {
+        return Yii::getAlias('@web/') . $path;
     }
 }
