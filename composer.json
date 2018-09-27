@@ -1,31 +1,30 @@
 {
-    "name": "scanerrr/yii2-local-image",
-    "description": "Resize images and save to cache.",
-    "keywords": ["yii2","yii 2", "images", "yii2-images"],
-    "homepage": "http://github.com/scanerrr/yii2-local-image",
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "scanerrr",
-            "email": "scanerrr0@gmail.com"
-        }
-    ],
-    "type": "yii2-extension",
-    "require": {
-		"php": ">=7.0",
-        "yiisoft/yii2": "*",
-        "ext-gd": "*",
-        "ext-exif": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Scanerrr\\Image\\": "src/"
-        }
-    },
-  "repositories": [
+  "name": "scanerrr/yii2-local-image",
+  "description": "Resize images and save to cache.",
+  "keywords": [
+    "yii2",
+    "yii 2",
+    "images",
+    "yii2-images"
+  ],
+  "homepage": "http://github.com/scanerrr/yii2-local-image",
+  "license": "BSD-3-Clause",
+  "authors": [
     {
-      "type": "git",
-      "url": "https://github.com/Scanerrr/yii2-local-image.git"
+      "name": "scanerrr",
+      "email": "scanerrr0@gmail.com"
     }
-  ]
+  ],
+  "type": "yii2-extension",
+  "require": {
+    "yiisoft/yii2": "*",
+    "php": ">=7.0",
+    "ext-gd": "*",
+    "ext-exif": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Scanerrr\\Image\\": "src/"
+    }
+  }
 }
