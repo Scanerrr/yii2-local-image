@@ -1,5 +1,6 @@
 {
   "name": "scanerrr/yii2-local-image",
+  "version": "0.5.5",
   "description": "Resize images and save to cache.",
   "keywords": [
     "yii2",

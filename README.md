@@ -36,3 +36,11 @@ Html::img(Image::resize($pathToImage, 120))
 * Result image gonna be 120x67
 */
 ```
+
+TODO
+-------------
+
+-   Add CHANGELOG.md [ ]
+-   Implement crop function [ ]
+-   Allow to disable caching [ ]
+-   Add tests [ ]
