@@ -24,5 +24,15 @@ Usage
 -------------
 
 ```php
-Html::img(Image::resize($pathToImage, 75, 75))
+Html::img(Image::resize($pathToImage, $width, $height = null));
+```
+
+Resize image with saving aspect ratio, simply miss "height"
+```php
+Html::img(Image::resize($pathToImage, 120))
+
+/* 
+* Original image with resolution 1920x1080
+* Result image gonna be 120x67
+*/
 ```

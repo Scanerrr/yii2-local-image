@@ -5,6 +5,8 @@
     "yii2",
     "yii 2",
     "images",
+    "php",
+    "gd",
     "yii2-images"
   ],
   "homepage": "http://github.com/scanerrr/yii2-local-image",
