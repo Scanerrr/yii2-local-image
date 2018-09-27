@@ -5,7 +5,6 @@ namespace Scanerrr\Image;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\FileHelper;
-use yii\helpers\VarDumper;
 
 /**
  *  A image tool class
