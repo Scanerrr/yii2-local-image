@@ -5,6 +5,7 @@ namespace Scanerrr\Image;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 /**
  *  A image tool class
@@ -19,6 +20,8 @@ class Image
 
     protected static $cachePath = 'cache';
 
+    protected static $placeholder = 'https://placeholder.pics/svg/';
+
     /**
      * @param string $file
      * @param null|float $width
@@ -27,18 +30,9 @@ class Image
      */
     public static function resize($file, $width = null, $height = null)
     {
-        $file = FileHelper::normalizePath($file);
-
         $rootFilePath = self::getRootPath($file);
 
-        if (!is_file($rootFilePath)) return '';
-
-        $cachedFile = self::formatCachedName($file);
-
-        // if cached return file path
-        if (is_file($cachedFile)) return self::getWebPath($cachedFile);
-
-        $file = Yii::$app->urlManager->createAbsoluteUrl($file);
+        if (!is_file($rootFilePath)) return self::$placeholder . self::getSizesAsString('x');
 
         list($origWidth, $origHeight) = getimagesize($file);
 
@@ -47,14 +41,18 @@ class Image
             ? self::$height
             : ($origHeight * self::$width) / $origWidth;
 
-        $imageType = exif_imagetype($file);
+        $cachedFile = self::formatCachedName($file);
+
+        if (is_file($cachedFile)) return self::getFile($cachedFile);
+
+        $imageType = exif_imagetype($rootFilePath);
 
         switch ($imageType) {
             case IMAGETYPE_JPEG:
-                $image = imagecreatefromjpeg($file);
+                $image = imagecreatefromjpeg($rootFilePath);
                 break;
             case IMAGETYPE_PNG:
-                $image = imagecreatefrompng($file);
+                $image = imagecreatefrompng($rootFilePath);
                 break;
             default:
                 return false;
@@ -67,7 +65,7 @@ class Image
 
         if ($scale == 1 && $scaleH == $scaleW && $imageType != IMAGETYPE_PNG) {
             copy($rootFilePath, self::getRootPath($cachedFile));
-            return self::getWebPath($cachedFile);
+            return self::getFile($cachedFile);
         }
 
         $newWidth = (int)($origWidth * $scale);
@@ -98,10 +96,20 @@ class Image
                 imagepng($image, $cachedFile);
             }
             imagedestroy($image);
-            return self::getWebPath($cachedFile);
+            return self::getFile($cachedFile);
         }
     }
 
+    protected static function getSizesAsString($separator = '_')
+    {
+        return floor(self::$width) . $separator . floor(self::$height);
+    }
+
+    protected static function getFile($file)
+    {
+        if (is_file($file)) return self::getWebPath($file);
+        return self::$placeholder . self::getSizesAsString('x');
+    }
 
     /**
      *
@@ -117,16 +125,16 @@ class Image
             FileHelper::createDirectory(self::$cachePath . $info['dirname'], 0775, true);
         } catch (Exception $e) {
         }
-        return self::$cachePath . $info['dirname'] . '/' . $info['filename'] . '_' . self::$width . '_' . self::$height . '.' . $info['extension'];
+        return self::$cachePath . $info['dirname'] . '/' . $info['filename'] . '_' . self::getSizesAsString() . '.' . $info['extension'];
     }
 
     protected static function getWebPath($path)
     {
-        return Yii::getAlias('@webroot/') . $path;
+        return Yii::getAlias('@web/') . $path;
     }
 
     protected static function getRootPath($path)
     {
-        return Yii::getAlias('@web/') . $path;
+        return Yii::getAlias('@webroot/') . $path;
     }
 }
