@@ -1,6 +1,6 @@
 <?php
 
-namespace Scanerrr\Image;
+namespace Scanerrr;
 
 use Yii;
 use yii\base\Exception;
