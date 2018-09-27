@@ -1,0 +1,26 @@
+{
+    "name": "scanerrr/yii2-local-image-library",
+    "description": "Resize images and save to cache.",
+    "keywords": ["yii2", "images", "yii2-images", "scanerrr"],
+    "homepage": "http://github.com/scanerrr/yii2-local-image-library",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "scanerrr",
+            "email": "scanerrr0@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "type": "yii2-extension",
+    "require": {
+		"php": ">=7.0",
+        "yiisoft/yii2": "*",
+        "ext-gd": "*",
+        "ext-exif": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Scanerrr\\Image\\": "src/"
+        }
+    }
+}
