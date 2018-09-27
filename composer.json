@@ -1,8 +1,8 @@
 {
-    "name": "scanerrr/yii2-local-image-library",
+    "name": "scanerrr/yii2-local-image",
     "description": "Resize images and save to cache.",
     "keywords": ["yii2","yii 2", "images", "yii2-images"],
-    "homepage": "http://github.com/scanerrr/yii2-local-image-library",
+    "homepage": "http://github.com/scanerrr/yii2-local-image",
     "license": "BSD-3-Clause",
     "authors": [
         {
