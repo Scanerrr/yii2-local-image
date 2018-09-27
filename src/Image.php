@@ -17,7 +17,7 @@ class Image
     protected static $width = 150;
     protected static $height = 150;
 
-    protected static $cachePath = 'cache';
+    protected static $cachePath = 'cache/';
 
     protected static $placeholder = 'https://placeholder.pics/svg/';
 
