@@ -14,12 +14,24 @@ use yii\helpers\FileHelper;
 class Image
 {
 
-    protected static $width = 150;
-    protected static $height = 150;
+    protected static $initialWidth = 150;
+    protected static $initialHeight = 150;
+
+    protected static $width;
+    protected static $height;
 
     protected static $cachePath = 'cache/';
 
     protected static $placeholder = 'https://placeholder.pics/svg/';
+
+    /**
+     * reset initial properties
+     */
+    protected static function init()
+    {
+        self::$width = self::$initialWidth;
+        self::$height = self::$initialHeight;
+    }
 
     /**
      * @param string $file
@@ -29,6 +41,8 @@ class Image
      */
     public static function resize($file, $width = null, $height = null)
     {
+        self::init();
+
         $rootFilePath = self::getRootPath($file);
 
         if (!is_file($rootFilePath)) return self::$placeholder . self::getSizesAsString('x');
