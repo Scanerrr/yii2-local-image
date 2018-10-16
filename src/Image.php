@@ -46,7 +46,7 @@ class Image
     {
         // reset values to default after using method
         self::init();
-        
+
         if (!$file) return self::getPlaceholder();
 
         $rootFilePath = self::getRootPath($file);
