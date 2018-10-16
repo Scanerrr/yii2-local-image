@@ -34,28 +34,34 @@ class Image
     }
 
     /**
+     * resize
+     *
      * @param string $file
      * @param null|float $width
      * @param null|float $height
-     * @return string|boolean
+     * @return string
+     * @throws Exception
      */
-    public static function resize($file, $width = null, $height = null)
+    public static function resize(string $file, float $width = null, float $height = null): string
     {
+        // reset values to default after using method
         self::init();
 
         $rootFilePath = self::getRootPath($file);
 
-        if (!is_file($rootFilePath)) return self::$placeholder . self::getSizesAsString('x');
+        // return placeholder image if file not exist
+        if (!is_file($rootFilePath)) return self::getPlaceholder();
 
         list($origWidth, $origHeight) = getimagesize($file);
 
+        // set width and calculate height by aspect ratio
         self::$width = $width ?? self::$width;
         self::$height = $height
             ? self::$height
             : ($origHeight * self::$width) / $origWidth;
 
+        // return image from cache
         $cachedFile = self::formatCachedName($file);
-
         if (is_file($cachedFile)) return self::getFile($cachedFile);
 
         $imageType = exif_imagetype($rootFilePath);
@@ -68,7 +74,7 @@ class Image
                 $image = imagecreatefrompng($rootFilePath);
                 break;
             default:
-                return false;
+                return self::getPlaceholder();
         }
 
         $scaleW = self::$width / $origWidth;
@@ -76,7 +82,8 @@ class Image
 
         $scale = min($scaleW, $scaleH);
 
-        if ($scale == 1 && $scaleH == $scaleW && $imageType != IMAGETYPE_PNG) {
+        // copy file to
+        if ($scale == 1 && $scaleH == $scaleW && $imageType !== IMAGETYPE_PNG) {
             copy($rootFilePath, self::getRootPath($cachedFile));
             return self::getFile($cachedFile);
         }
@@ -89,7 +96,7 @@ class Image
 
         $image = imagecreatetruecolor(self::$width, self::$height);
 
-        if ($imageType == IMAGETYPE_PNG) {
+        if ($imageType === IMAGETYPE_PNG) {
             imagealphablending($image, false);
             imagesavealpha($image, true);
             $background = imagecolorallocatealpha($image, 255, 255, 255, 127);
@@ -102,26 +109,40 @@ class Image
         imagecopyresampled($image, $imageOld, $xPos, $yPos, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
         imagedestroy($imageOld);
 
-        if (is_resource($image)) {
-            if ($imageType == IMAGETYPE_JPEG) {
-                imagejpeg($image, $cachedFile, 90);
-            } elseif ($imageType == IMAGETYPE_PNG) {
-                imagepng($image, $cachedFile);
-            }
-            imagedestroy($image);
-            return self::getFile($cachedFile);
+        if (!is_resource($image)) return self::getPlaceholder();
+        if ($imageType === IMAGETYPE_JPEG) {
+            imagejpeg($image, $cachedFile, 90);
+        } elseif ($imageType === IMAGETYPE_PNG) {
+            imagepng($image, $cachedFile);
         }
+        imagedestroy($image);
+
+        return self::getFile($cachedFile);
     }
 
-    protected static function getSizesAsString($separator = '_')
+    /**
+     * get string by width and height
+     *
+     * @example $width = 150, $height = 150
+     * @example return 150_150
+     *
+     * @param string $separator
+     * @return string
+     */
+    protected static function getSizesAsString(string $separator = '_'): string
     {
         return floor(self::$width) . $separator . floor(self::$height);
     }
 
+    /**
+     *
+     * @param $file
+     * @return string
+     */
     protected static function getFile($file)
     {
         if (is_file($file)) return self::getWebPath($file);
-        return self::$placeholder . self::getSizesAsString('x');
+        return self::getPlaceholder();
     }
 
     /**
@@ -130,24 +151,30 @@ class Image
      *
      * @param $file
      * @return string
+     * @throws Exception
      */
-    protected static function formatCachedName($file)
+    protected static function formatCachedName(string $file): string
     {
         $info = pathinfo($file);
-        try {
-            FileHelper::createDirectory(self::$cachePath . $info['dirname'], 0775, true);
-        } catch (Exception $e) {
-        }
+        FileHelper::createDirectory(self::$cachePath . $info['dirname'], 0775, true);
         return self::$cachePath . $info['dirname'] . '/' . $info['filename'] . '_' . self::getSizesAsString() . '.' . $info['extension'];
     }
 
-    protected static function getWebPath($path)
+    protected static function getWebPath(string $path): string
     {
         return Yii::getAlias('@web/') . $path;
     }
 
-    protected static function getRootPath($path)
+    protected static function getRootPath(string $path): string
     {
         return Yii::getAlias('@webroot/') . $path;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getPlaceholder(): string
+    {
+        return self::$placeholder . self::getSizesAsString('x');
     }
 }

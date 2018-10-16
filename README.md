@@ -44,3 +44,6 @@ TODO
 -   Implement crop function [ ]
 -   Allow to disable caching [ ]
 -   Add tests [ ]
+-   Add comments [ x ]
+-   Add more extensions [ ]
+-   Try to rewrite with Imagick [ ]
