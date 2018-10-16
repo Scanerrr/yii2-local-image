@@ -42,10 +42,12 @@ class Image
      * @return string
      * @throws Exception
      */
-    public static function resize($file, float $width = null, float $height = null): string
+    public static function resize(string $file = null, float $width = null, float $height = null): string
     {
         // reset values to default after using method
         self::init();
+        
+        if (!$file) return self::getPlaceholder();
 
         $rootFilePath = self::getRootPath($file);
 
