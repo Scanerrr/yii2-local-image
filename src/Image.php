@@ -42,7 +42,7 @@ class Image
      * @return string
      * @throws Exception
      */
-    public static function resize(string $file, float $width = null, float $height = null): string
+    public static function resize($file, float $width = null, float $height = null): string
     {
         // reset values to default after using method
         self::init();
