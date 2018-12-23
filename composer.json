@@ -1,11 +1,11 @@
 {
   "name": "scanerrr/yii2-local-image",
-  "version": "0.5.5",
   "description": "Resize images and save to cache.",
   "keywords": [
     "yii2",
     "yii 2",
     "images",
+    "cache",
     "php",
     "gd",
     "yii2-images"
@@ -29,5 +29,11 @@
     "psr-4": {
       "Scanerrr\\": "src/"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
 }
