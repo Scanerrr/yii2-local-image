@@ -54,7 +54,7 @@ class Image
         // return placeholder image if file not exist
         if (!is_file($rootFilePath)) return self::getPlaceholder();
 
-        list($origWidth, $origHeight) = getimagesize($file);
+        list($origWidth, $origHeight) = getimagesize(Yii::getAlias('@webroot/') . $file);
 
         // set width and calculate height by aspect ratio
         self::$width = $width ?? self::$width;
