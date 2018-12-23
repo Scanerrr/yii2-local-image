@@ -17,7 +17,7 @@ Add yii2-local-image to the require section of your composer.json file:
 
 Or simply run
 ```bash
-php composer.phar require scanerrr/yii2-local-image
+php composer.phar require "scanerrr/yii2-local-image @dev"
 ```
 
 Usage
